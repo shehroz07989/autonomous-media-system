@@ -5,6 +5,7 @@ class Run:
         "SUCCESS": set(),
         "FAILED": set()
         }
+
     def __init__(self, run_id, query):
         self.run_id = run_id
         self.query = query
@@ -20,14 +21,43 @@ class Run:
             raise ValueError(f"ILLEGAL_TRANSITION ({self.status}) ---> {new_status}")
         
 
-run = Run("123", "test")
 
-run.change_status("RUNNING")
-run.change_status("SUCCESS")
 
-try:
-    run.change_status("FAILED")
-except ValueError as error:
-    print(error)
+def discover():
+    return "discover_success"
+def research():
+    return "research_success_"
 
-print(run.status)
+def plan():
+    return "plan_success"
+
+def generate():
+    return "generate_success"
+
+def verify():
+    return "verify_success"
+
+def publish():
+    return "publish_success"
+
+
+STAGE_HANDLERS = {
+        "DISCOVER": discover,
+        "RESEARCH": research,
+        "PLAN": plan,
+        "GENERATE": generate,
+        "VERIFY": verify,
+        "PUBLISH": publish
+    }
+def stage_execute(stage_name):
+    
+    stage_to_execute = STAGE_HANDLERS.get(stage_name)
+    if stage_to_execute is None:
+        raise ValueError("Unknown_Stage_Name")
+    return stage_to_execute()
+
+
+run = Run("123", "make a video")
+stage = run.current_stage = "BANANA"
+result = stage_execute(stage)
+print (result)
